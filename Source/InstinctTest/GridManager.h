@@ -16,10 +16,10 @@ class INSTINCTTEST_API AGridManager : public AActor
 
 protected:
 	TArray<TArray<ATile*>> Grid2DArray;
-	UPROPERTY(EditAnywhere, Category = "Grid|Layout")
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Layout")
 		int32 GridWidth;
 
-	UPROPERTY(EditAnywhere, Category = "Grid|Layout")
+	UPROPERTY(BlueprintReadOnly, Category = "Grid|Layout")
 		int32 GridHeight;
 
 	UPROPERTY(EditAnywhere, Category = "Grid|Layout")
