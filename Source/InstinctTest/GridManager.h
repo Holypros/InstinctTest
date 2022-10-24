@@ -40,6 +40,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Grid|Layout")
 		float ChanceofWater;
 
+	UPROPERTY(EditAnywhere, Category = "Grid|Layout")
+		TSubclassOf<AActor> Wall;
+
+	UPROPERTY(EditAnywhere, Category = "Grid|Layout")
+		TSubclassOf<AActor> Wall1;
 
 public:	
 	// Sets default values for this actor's properties

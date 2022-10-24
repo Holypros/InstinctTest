@@ -103,10 +103,23 @@ void AGridManager::BeginPlay()
 	//spawning an actor on the grid at random
 	int32 i = FMath::RandRange(0, GridWidth-1);
 	int32 j = FMath::RandRange(0, GridHeight-1);
-
 	//UE_LOG(LogTemp, Warning, TEXT("The integer value is: %d"), i);
 	TSubclassOf<AActor> actortoSpawn = SimpleCube;
-
 	AActor* newCube = GetWorld()->SpawnActor<AActor>(actortoSpawn, FVector(FIntPoint(i*100, j*100)), FRotator::ZeroRotator);
+
+
+	TSubclassOf<AActor> wallToSpawn = Wall;
+	AActor* firstWall = GetWorld()->SpawnActor<AActor>(wallToSpawn, FVector(FIntPoint(-56.7f, -60)), FRotator::ZeroRotator); // First Wall
+	firstWall->SetActorScale3D(FVector(GridWidth, 1, 1));
+
+	TSubclassOf<AActor> wall1ToSpawn = Wall1;
+	AActor* secondWall = GetWorld()->SpawnActor<AActor>(wall1ToSpawn, FVector(FIntPoint(-56.7f, -55)), FRotator::ZeroRotator); // second Wall
+	secondWall->SetActorScale3D(FVector(1, GridHeight, 1));
+
+	AActor* ThirdWall = GetWorld()->SpawnActor<AActor>(wallToSpawn, FVector(FIntPoint(-56.7f, GridHeight*100 -60)), FRotator::ZeroRotator); // First Wall
+	ThirdWall->SetActorScale3D(FVector(GridWidth, 1, 1));
+
+	AActor* fourthWall = GetWorld()->SpawnActor<AActor>(wall1ToSpawn, FVector(FIntPoint(GridWidth*100-56.7f, -55)), FRotator::ZeroRotator); // second Wall
+	fourthWall->SetActorScale3D(FVector(1, GridHeight, 1));
 }
 
