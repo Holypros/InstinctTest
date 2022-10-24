@@ -23,6 +23,8 @@ public:
 		class USpringArmComponent* SpringArm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ball")
 		class UCameraComponent* CameraComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ball")
+		float ballSpeed;
 
 	
 
@@ -32,5 +34,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void MoveForward(float value);
+	void MoveRight(float value);
+	void TurnFunction(float value);
+	void LookUpFunction(float value);
 
 };
