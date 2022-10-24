@@ -33,7 +33,6 @@ TArray<int32> ParseString(FString* string) {
 		newInt = FCString::Atoi(*temp);
 		arr1.Add(newInt);
 	}
-
 	return arr1;
 }
 
@@ -89,13 +88,11 @@ void AGridManager::BeginPlay()
 			const float xPos = x * TileHorizontalOffset;
 			const float yPos = y * TileVerticalOffset;
 
-
 			TSubclassOf<ATile> tileToSpawn = GrassTile;
 			if (FMath::RandRange(0.f, 1.f) <= ChanceofWater)
 			{
 				tileToSpawn = WaterTile;
 			}
-
 			ATile* newTile = GetWorld()->SpawnActor<ATile>(tileToSpawn, FVector(FIntPoint(xPos, yPos)), FRotator::ZeroRotator);
 			newTile->TileIndex = FIntPoint(x, y);
 			newTile->SetActorLabel(FString::Printf(TEXT("Tile_%d-%d"), x, y));
