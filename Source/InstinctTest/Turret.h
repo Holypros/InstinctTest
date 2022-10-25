@@ -39,6 +39,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 		float ChangeTargetDelay = 5.f;
 
+	// Rotation data
 	int timerCount = 0;
 	FTimerHandle timerHandle;
 
@@ -46,11 +47,23 @@ protected:
 	FRotator TargetRotation;
 	FRotator RotationDelta; //Difference between current rotation and rotation we need to have
 
+
+	//
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turret")
+		float BeamLength = 1000.f;
+
 	UFUNCTION()
 		void UpdateLookAtTarget(float DeltaTime);
 
 	UFUNCTION()
 		void ChangeBeamTarget();
+
+	UFUNCTION(BlueprintCallable)
+		void SetBeamLength(float length);
+
+	UFUNCTION()
+		void TraceBeam();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

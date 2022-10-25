@@ -5,6 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "TurretAnimInterface.h"
 
+#define OUT
 // Sets default values
 ATurret::ATurret()
 {
@@ -25,6 +26,8 @@ ATurret::ATurret()
 
 	FollowTarget = CreateDefaultSubobject<USceneComponent>(TEXT("FollowTarget"));
 	FollowTarget->SetupAttachment(Root);
+
+	SetBeamLength(BeamLength);
 
 }
 
@@ -64,6 +67,10 @@ void ATurret::ChangeBeamTarget()
 	RotationDelta.Normalize(); //incase we have odd values
 }
 
+
+
+
+
 // Called when the game starts or when spawned
 void ATurret::BeginPlay()
 {
@@ -79,5 +86,41 @@ void ATurret::Tick(float DeltaTime)
 
 	UpdateLookAtTarget(DeltaTime);
 
+	TraceBeam();
+
 }
 
+void ATurret::SetBeamLength(float length)
+{
+	Beam->SetRelativeScale3D(FVector(length / 100, Beam->GetRelativeScale3D().Y, Beam->GetRelativeScale3D().Z));
+	Beam->SetRelativeLocation(FVector(length / (-2.0f), 0, 0));
+}
+
+void ATurret::TraceBeam()
+{
+	
+	FHitResult HitResult;
+	FVector Start = TurretMesh->GetSocketLocation("BeamSocket");
+	FVector End = Start + Beam->GetForwardVector() * BeamLength;
+
+	FCollisionQueryParams CollQueryParams;
+	CollQueryParams.AddIgnoredActor(this);
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel
+	(
+		OUT HitResult,
+		Start,
+		End,
+		ECollisionChannel::ECC_Camera,
+		CollQueryParams
+	);
+
+	if (bHit)
+	{
+		SetBeamLength(HitResult.Distance);
+	}
+	else
+	{		
+		SetBeamLength(BeamLength);		
+	}
+}
