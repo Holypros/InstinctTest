@@ -77,6 +77,8 @@ void ATurret::BeginPlay()
 	Super::BeginPlay();
 
 	GetWorldTimerManager().SetTimer(timerHandle, this, &ATurret::ChangeBeamTarget, ChangeTargetDelay, true,1.f);
+	GetWorldTimerManager().SetTimer(TracetimerHandle, this, &ATurret::TraceBeam, .1f, true, .1f);
+
 }
 
 // Called every frame
@@ -86,7 +88,7 @@ void ATurret::Tick(float DeltaTime)
 
 	UpdateLookAtTarget(DeltaTime);
 
-	TraceBeam();
+	//TraceBeam();
 
 }
 

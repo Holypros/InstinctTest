@@ -42,6 +42,7 @@ protected:
 	// Rotation data
 	int timerCount = 0;
 	FTimerHandle timerHandle;
+	FTimerHandle TracetimerHandle;
 
 	FRotator LookAtRotation;
 	FRotator TargetRotation;
