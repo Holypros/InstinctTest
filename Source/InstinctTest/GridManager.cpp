@@ -42,6 +42,7 @@ void AGridManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+#pragma region ReadFromFile
 	FString file = FPaths::ProjectConfigDir();
 
 	file.Append(TEXT("data.txt"));
@@ -61,7 +62,7 @@ void AGridManager::BeginPlay()
 				UE_LOG(LogTemp, Warning, TEXT("%d"), myArr[i]);
 			}
 			GridHeight = myArr[0];
-			GridWidth = myArr[1];			
+			GridWidth = myArr[1];
 		}
 		else
 		{
@@ -73,6 +74,8 @@ void AGridManager::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: ERROR: Can not read the file because it was not found."));
 		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Expected file location: %s"), *file);
 	}
+#pragma endregion
+
 
 
 	Grid2DArray.SetNumZeroed(GridWidth); //initilize the array as zero instead of null or empty
@@ -103,11 +106,11 @@ void AGridManager::BeginPlay()
 	//spawning an actor on the grid at random
 	int32 i = FMath::RandRange(0, GridWidth-1);
 	int32 j = FMath::RandRange(0, GridHeight-1);
-	//UE_LOG(LogTemp, Warning, TEXT("The integer value is: %d"), i);
-	TSubclassOf<AActor> actortoSpawn = SimpleCube;
+	TSubclassOf<AActor> actortoSpawn = Turret;
 	AActor* newCube = GetWorld()->SpawnActor<AActor>(actortoSpawn, FVector(FIntPoint(i*100, j*100)), FRotator::ZeroRotator);
 
 
+#pragma region SpawningWallsAroundTheGrid
 	TSubclassOf<AActor> wallToSpawn = Wall;
 	AActor* firstWall = GetWorld()->SpawnActor<AActor>(wallToSpawn, FVector(FIntPoint(-56.7f, -60)), FRotator::ZeroRotator); // First Wall
 	firstWall->SetActorScale3D(FVector(GridWidth, 1, 1));
@@ -116,10 +119,12 @@ void AGridManager::BeginPlay()
 	AActor* secondWall = GetWorld()->SpawnActor<AActor>(wall1ToSpawn, FVector(FIntPoint(-56.7f, -55)), FRotator::ZeroRotator); // second Wall
 	secondWall->SetActorScale3D(FVector(1, GridHeight, 1));
 
-	AActor* ThirdWall = GetWorld()->SpawnActor<AActor>(wallToSpawn, FVector(FIntPoint(-56.7f, GridHeight*100 -60)), FRotator::ZeroRotator); // First Wall
+	AActor* ThirdWall = GetWorld()->SpawnActor<AActor>(wallToSpawn, FVector(FIntPoint(-56.7f, GridHeight * 100 - 60)), FRotator::ZeroRotator); // First Wall
 	ThirdWall->SetActorScale3D(FVector(GridWidth, 1, 1));
 
-	AActor* fourthWall = GetWorld()->SpawnActor<AActor>(wall1ToSpawn, FVector(FIntPoint(GridWidth*100-56.7f, -55)), FRotator::ZeroRotator); // second Wall
+	AActor* fourthWall = GetWorld()->SpawnActor<AActor>(wall1ToSpawn, FVector(FIntPoint(GridWidth * 100 - 56.7f, -55)), FRotator::ZeroRotator); // second Wall
 	fourthWall->SetActorScale3D(FVector(1, GridHeight, 1));
+#pragma endregion
+
 }
 

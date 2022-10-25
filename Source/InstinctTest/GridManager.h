@@ -35,7 +35,7 @@ protected:
 		TSubclassOf<ATile> WaterTile;
 
 	UPROPERTY(EditAnywhere, Category = "Grid|Layout")
-		TSubclassOf<AActor> SimpleCube;
+		TSubclassOf<AActor> Turret;
 
 	UPROPERTY(EditAnywhere, Category = "Grid|Layout")
 		float ChanceofWater;
