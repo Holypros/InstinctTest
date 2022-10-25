@@ -28,11 +28,14 @@ ATurret::ATurret()
 
 }
 
-void ATurret::UpdateLookAtTarget()
+void ATurret::UpdateLookAtTarget(float DeltaTime)
 {
-	FVector Start = TurretMesh->GetSocketLocation("BeamSocket");
-	FVector End = FollowTarget->GetComponentLocation();
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+	if (LookAtRotation.Equals(TargetRotation,1.f))
+	{
+		return;
+	}
+
+	LookAtRotation += RotationDelta * 0.3f * DeltaTime;
 
 	if (TurretMesh->GetAnimInstance()->Implements<UTurretAnimInterface>()) 
 	{
@@ -52,6 +55,13 @@ void ATurret::ChangeBeamTarget()
 	{
 		FollowTarget->SetWorldLocation(Target2->GetComponentLocation());
 	}
+
+	FVector Start = TurretMesh->GetSocketLocation("BeamSocket");
+	FVector End = FollowTarget->GetComponentLocation();
+	TargetRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+
+	RotationDelta = TargetRotation - LookAtRotation;
+	RotationDelta.Normalize(); //incase we have odd values
 }
 
 // Called when the game starts or when spawned
@@ -59,7 +69,7 @@ void ATurret::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(timerHandle, this, &ATurret::ChangeBeamTarget, 5.f, true,1.f);
+	GetWorldTimerManager().SetTimer(timerHandle, this, &ATurret::ChangeBeamTarget, ChangeTargetDelay, true,1.f);
 }
 
 // Called every frame
@@ -67,7 +77,7 @@ void ATurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UpdateLookAtTarget();
+	UpdateLookAtTarget(DeltaTime);
 
 }
 

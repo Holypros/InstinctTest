@@ -99,7 +99,7 @@ void AGridManager::BeginPlay()
 			ATile* newTile = GetWorld()->SpawnActor<ATile>(tileToSpawn, FVector(FIntPoint(xPos, yPos)), FRotator::ZeroRotator);
 			newTile->TileIndex = FIntPoint(x, y);
 			newTile->SetActorLabel(FString::Printf(TEXT("Tile_%d-%d"), x, y));
-			Grid2DArray[x][y] = newTile;
+			Grid2DArray[x][y] = newTile; //The 2D array now holds each actor
 		}
 	}
 

@@ -36,11 +36,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 		USceneComponent* FollowTarget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+		float ChangeTargetDelay = 5.f;
+
 	int timerCount = 0;
 	FTimerHandle timerHandle;
 
+	FRotator LookAtRotation;
+	FRotator TargetRotation;
+	FRotator RotationDelta; //Difference between current rotation and rotation we need to have
+
 	UFUNCTION()
-		void UpdateLookAtTarget();
+		void UpdateLookAtTarget(float DeltaTime);
 
 	UFUNCTION()
 		void ChangeBeamTarget();
