@@ -49,7 +49,7 @@ protected:
 	FRotator RotationDelta; //Difference between current rotation and rotation we need to have
 
 	UPROPERTY()
-	AActor* Enemy;
+	AActor* Enemy = nullptr;
 
 
 	//

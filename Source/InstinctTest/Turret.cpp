@@ -149,6 +149,10 @@ void ATurret::CheckEnemy(AActor* hitActor)
 		}
 
 	}
+	else
+	{
+		Enemy = nullptr;
+	}
 }
 
 void ATurret::FollowEnemy(float DeltaTime)
