@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "CharacterInterface.h"
 #include "BallCharacter.generated.h"
 
 UCLASS()
-class INSTINCTTEST_API ABallCharacter : public APawn
+class INSTINCTTEST_API ABallCharacter : public APawn, public ICharacterInterface
 {
 	GENERATED_BODY()
 
@@ -39,4 +40,5 @@ public:
 	void TurnFunction(float value);
 	void LookUpFunction(float value);
 
+	bool IsEnemy_Implementation() override;
 };

@@ -48,6 +48,9 @@ protected:
 	FRotator TargetRotation;
 	FRotator RotationDelta; //Difference between current rotation and rotation we need to have
 
+	UPROPERTY()
+	AActor* Enemy;
+
 
 	//
 
@@ -65,6 +68,12 @@ protected:
 
 	UFUNCTION()
 		void TraceBeam();
+
+	UFUNCTION()
+		void CheckEnemy(AActor* hitActor);
+
+	UFUNCTION()
+		void FollowEnemy(float DeltaTime);
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

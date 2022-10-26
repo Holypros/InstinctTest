@@ -10,11 +10,11 @@
 // Sets default values
 ABallCharacter::ABallCharacter()
 {
-	SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Component"));
+	//SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Component"));
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Component"));
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Comp"));
-	SetRootComponent(SceneComp);
+	SetRootComponent(StaticMesh);
 	
 	StaticMesh->SetupAttachment(SceneComp);
 	SpringArm->SetupAttachment(StaticMesh);
@@ -63,5 +63,10 @@ void ABallCharacter::TurnFunction(float value)
 void ABallCharacter::LookUpFunction(float value)
 {
 	AddControllerPitchInput(value);
+}
+
+bool ABallCharacter::IsEnemy_Implementation()
+{
+	return true;
 }
 
