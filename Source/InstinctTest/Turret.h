@@ -39,10 +39,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 		float ChangeTargetDelay = 5.f;
 
-	// Rotation data
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+		UParticleSystemComponent* P_MuzzleFlash;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+		USoundBase* ShootSound;
+
 	int timerCount = 0;
 	FTimerHandle timerHandle;
 	FTimerHandle TracetimerHandle;
+	FTimerHandle ShootTimerHandle;
 
 	FRotator LookAtRotation;
 	FRotator TargetRotation;
@@ -74,6 +80,9 @@ protected:
 
 	UFUNCTION()
 		void FollowEnemy(float DeltaTime);
+
+	UFUNCTION()
+		void Shoot();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -5,6 +5,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "CharacterInterface.h"
 #include "TurretAnimInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "particles/ParticleSystemComponent.h"
 
 #define OUT
 // Sets default values
@@ -29,6 +31,9 @@ ATurret::ATurret()
 	FollowTarget->SetupAttachment(Root);
 
 	SetBeamLength(BeamLength);
+
+	P_MuzzleFlash = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Muzzle Flash"));
+	P_MuzzleFlash->SetupAttachment(TurretMesh,TEXT("BeamSocket"));
 
 }
 
@@ -67,10 +72,6 @@ void ATurret::ChangeBeamTarget()
 	RotationDelta = TargetRotation - LookAtRotation;
 	RotationDelta.Normalize(); //incase we have odd values
 }
-
-
-
-
 
 // Called when the game starts or when spawned
 void ATurret::BeginPlay()
@@ -144,14 +145,20 @@ void ATurret::CheckEnemy(AActor* hitActor)
 		bool bEnemy = ICharacterInterface::Execute_IsEnemy(hitActor);
 		if (bEnemy) 
 		{
-			Enemy = hitActor;
-			UE_LOG(LogTemp, Warning, TEXT("Enemy Detected"));
+			if (!Enemy) //just to execute once at the first time
+			{
+				Enemy = hitActor;	
+				GetWorldTimerManager().SetTimer(ShootTimerHandle, this, &ATurret::Shoot, 1.f, true, 0.4f);
+			}		
 		}
-
 	}
 	else
 	{
-		Enemy = nullptr;
+		if (Enemy) {
+			Enemy = nullptr;
+			GetWorldTimerManager().ClearTimer(ShootTimerHandle);
+		}
+		
 	}
 }
 
@@ -170,4 +177,10 @@ void ATurret::FollowEnemy(float DeltaTime)
 	{
 		ITurretAnimInterface::Execute_UpdateLookAtRotation(TurretMesh->GetAnimInstance(), LookAtRotation);
 	}
+}
+
+void ATurret::Shoot()
+{
+	UGameplayStatics::PlaySoundAtLocation(this, ShootSound, P_MuzzleFlash->GetComponentLocation());
+	P_MuzzleFlash->Activate(true);
 }
