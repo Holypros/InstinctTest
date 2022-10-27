@@ -26,7 +26,18 @@ public:
 		class UCameraComponent* CameraComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ball")
 		float ballSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ball")
+		float health = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ball")
+		UParticleSystem* P_Explosion;
 
+
+	virtual float TakeDamage(
+		float DamageAmount,
+		struct FDamageEvent const& DamageEvent,
+		class AController* EventInstigator,
+		AActor* DamageCauser
+	) override;
 	
 
 

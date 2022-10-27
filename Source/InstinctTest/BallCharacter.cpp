@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "particles/ParticleSystemComponent.h"
 
 // Sets default values
 ABallCharacter::ABallCharacter()
@@ -20,11 +22,8 @@ ABallCharacter::ABallCharacter()
 	SpringArm->SetupAttachment(StaticMesh);
 	CameraComp->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
-	
+	P_Explosion = CreateDefaultSubobject<UParticleSystem>(TEXT("Explosion"));
 }
-
-
-
 
 
 // Called to bind functionality to input
@@ -66,7 +65,28 @@ void ABallCharacter::LookUpFunction(float value)
 }
 
 bool ABallCharacter::IsEnemy_Implementation()
-{
-	return true;
+{	
+	return (health>0);
 }
 
+
+float ABallCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (health <= 0) 
+	{
+		return 0;
+	}
+	float DamageCaused = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	DamageCaused = FMath::Min(health, DamageCaused); //if the current health value is less than the damage caused then the max value damagecaused should be is the current health value 
+	health -= DamageCaused;
+
+	if (health <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player Dead"));
+		DisableInput(GetWorld()->GetFirstPlayerController());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), P_Explosion, GetActorLocation(), GetActorRotation());
+		StaticMesh->DestroyComponent();
+	}
+	return DamageCaused;
+}

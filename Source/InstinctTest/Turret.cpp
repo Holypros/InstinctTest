@@ -166,7 +166,7 @@ void ATurret::FollowEnemy(float DeltaTime)
 {
 	FVector Start = TurretMesh->GetSocketLocation("BeamSocket");
 	FVector End = Enemy->GetActorLocation();
-	UE_LOG(LogTemp, Log, TEXT("Actor location: %s"), *End.ToString());
+	//UE_LOG(LogTemp, Log, TEXT("Actor location: %s"), *End.ToString());
 	FRotator RotationtoEnemy = UKismetMathLibrary::FindLookAtRotation(Start, End);
 
 
@@ -183,4 +183,26 @@ void ATurret::Shoot()
 {
 	UGameplayStatics::PlaySoundAtLocation(this, ShootSound, P_MuzzleFlash->GetComponentLocation());
 	P_MuzzleFlash->Activate(true);
+
+	FHitResult HitResult;
+	FVector Start = TurretMesh->GetSocketLocation("BeamSocket");
+	FVector End = Start + Beam->GetForwardVector() * BeamLength;
+
+	FCollisionQueryParams CollQueryParams;
+	CollQueryParams.AddIgnoredActor(this);
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel
+	(
+		OUT HitResult,
+		Start,
+		End,
+		ECollisionChannel::ECC_Camera,
+		CollQueryParams
+	);
+
+	if (bHit) 
+	{
+		FPointDamageEvent DamageEvent(damageToPlayer, HitResult, Beam->GetForwardVector(), nullptr);
+		HitResult.GetActor()->TakeDamage(damageToPlayer, DamageEvent, GetInstigatorController(), this);
+	}
 }

@@ -40,6 +40,9 @@ protected:
 		float ChangeTargetDelay = 5.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+		float damageToPlayer = 20.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 		UParticleSystemComponent* P_MuzzleFlash;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
