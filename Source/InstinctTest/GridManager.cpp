@@ -5,6 +5,8 @@
 #include "Tile.h"
 #include "Math/UnrealMathUtility.h" 
 
+
+
 // Sets default values
 AGridManager::AGridManager()
 {
@@ -49,7 +51,7 @@ void AGridManager::BeginPlay()
 
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 	FString FileContent;
-	TArray<int32> myArr;
+
 
 	if (FileManager.FileExists(*file))
 	{
@@ -63,6 +65,12 @@ void AGridManager::BeginPlay()
 			}
 			GridHeight = myArr[0];
 			GridWidth = myArr[1];
+			numofturrets = myArr[2];
+			if (numofturrets >= (GridHeight * GridWidth)) //safety check to make sure the number of turrets written in file does not exceed the tile size by half
+			{
+				numofturrets = (int32)((GridHeight * GridWidth)/2);
+			}
+
 		}
 		else
 		{
@@ -79,9 +87,11 @@ void AGridManager::BeginPlay()
 
 
 	Grid2DArray.SetNumZeroed(GridWidth); //initilize the array as zero instead of null or empty
+	flagArray.SetNumZeroed(GridWidth);
 	for (int32 i = 0; i < Grid2DArray.Num(); ++i) 
 	{
 		Grid2DArray[i].SetNumZeroed(GridHeight);
+		flagArray[i].SetNumZeroed(GridHeight);
 	}
 	
 	for (int32 y = 0; y < GridHeight; ++y) 
@@ -100,14 +110,41 @@ void AGridManager::BeginPlay()
 			newTile->TileIndex = FIntPoint(x, y);
 			newTile->SetActorLabel(FString::Printf(TEXT("Tile_%d-%d"), x, y));
 			Grid2DArray[x][y] = newTile; //The 2D array now holds each actor
+		//	UE_LOG(LogTemp, Warning, TEXT("Bool value is: %s"), flagArray[x][y] ? TEXT("true") : TEXT("false"));
 		}
 	}
 
-	//spawning an actor on the grid at random
-	int32 i = FMath::RandRange(0, GridWidth-1);
-	int32 j = FMath::RandRange(0, GridHeight-1);
-	TSubclassOf<AActor> actortoSpawn = Turret;
-	AActor* newCube = GetWorld()->SpawnActor<AActor>(actortoSpawn, FVector(FIntPoint(i*100, j*100)), FRotator::ZeroRotator);
+//spawning turrets randomly on grid
+#pragma region Spawning Turrets
+	int32 i;
+	int32 j;
+	TSubclassOf<AActor> turrettoSpawn = Turret;
+	for (int a = 0; a < numofturrets; ++a) {
+		i = FMath::RandRange(0, GridWidth - 1);
+		j = FMath::RandRange(0, GridHeight - 1);
+		while (flagArray[i][j] == true) {
+			i = FMath::RandRange(0, GridWidth - 1);
+			j = FMath::RandRange(0, GridHeight - 1);
+		}
+		AActor* newTurret = GetWorld()->SpawnActor<AActor>(turrettoSpawn, FVector(FIntPoint(i * 100, j * 100)), FRotator::ZeroRotator);
+		flagArray[i][j] = true;
+	}
+#pragma endregion
+
+
+//spawning coins
+#pragma region SpawningCoins
+	TSubclassOf<AActor> cointoSpawn = Coin;
+	i = FMath::RandRange(0, GridWidth - 1);
+	j = FMath::RandRange(0, GridHeight - 1);
+	while (flagArray[i][j] == true) {
+		i = FMath::RandRange(0, GridWidth - 1);
+		j = FMath::RandRange(0, GridHeight - 1);
+	}
+	AActor* newCoin = GetWorld()->SpawnActor<AActor>(cointoSpawn, FVector(FIntPoint(i * 100, j * 100)), FRotator::ZeroRotator);
+	flagArray[i][j] = true;
+
+#pragma endregion
 
 
 #pragma region SpawningWallsAroundTheGrid

@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "particles/ParticleSystemComponent.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ABallCharacter::ABallCharacter()
@@ -23,6 +24,12 @@ ABallCharacter::ABallCharacter()
 	CameraComp->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	P_Explosion = CreateDefaultSubobject<UParticleSystem>(TEXT("Explosion"));
+
+	TriggerCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Trigger Capsule"));
+	TriggerCapsule->InitCapsuleSize(55.5f, 96.f);
+	TriggerCapsule->SetCollisionProfileName(TEXT("Trigger"));
+	TriggerCapsule->SetupAttachment(RootComponent);
+
 }
 
 
@@ -68,6 +75,8 @@ bool ABallCharacter::IsEnemy_Implementation()
 {	
 	return (health>0);
 }
+
+
 
 
 float ABallCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)

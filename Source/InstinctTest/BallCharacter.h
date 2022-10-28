@@ -30,6 +30,8 @@ public:
 		float health = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ball")
 		UParticleSystem* P_Explosion;
+	UPROPERTY(VisibleAnywhere, Category = "Trigger Capsule")
+		class UCapsuleComponent* TriggerCapsule;
 
 
 	virtual float TakeDamage(
@@ -52,4 +54,6 @@ public:
 	void LookUpFunction(float value);
 
 	bool IsEnemy_Implementation() override;
+
+
 };
