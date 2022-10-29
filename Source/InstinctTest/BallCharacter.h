@@ -15,6 +15,8 @@ class INSTINCTTEST_API ABallCharacter : public APawn, public ICharacterInterface
 public:
 	// Sets default values for this pawn's properties
 	ABallCharacter();
+	int32 score = 0;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ball") //exposing to the editor
 		class USceneComponent* SceneComp;
@@ -54,6 +56,11 @@ public:
 	void LookUpFunction(float value);
 
 	bool IsEnemy_Implementation() override;
+
+	UFUNCTION()
+		void UpdateScore();
+	UFUNCTION(BlueprintCallable)
+		int getScore();
 
 
 };

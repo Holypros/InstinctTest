@@ -76,6 +76,16 @@ bool ABallCharacter::IsEnemy_Implementation()
 	return (health>0);
 }
 
+void ABallCharacter::UpdateScore()
+{
+	score++;
+}
+
+int ABallCharacter::getScore()
+{
+	return score;
+}
+
 
 
 

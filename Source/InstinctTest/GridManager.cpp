@@ -3,6 +3,8 @@
 
 #include "GridManager.h"
 #include "Tile.h"
+#include "INSTINCTTEST.h"
+#include "DataSave.h"
 #include "Math/UnrealMathUtility.h" 
 
 
@@ -45,9 +47,11 @@ void AGridManager::BeginPlay()
 	Super::BeginPlay();
 
 #pragma region ReadFromFile
-	FString file = FPaths::ProjectConfigDir();
 
-	file.Append(TEXT("data.txt"));
+	
+	FString file = FPaths::ProjectContentDir();
+
+	file.Append(TEXT("Files/data.txt"));
 
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 	FString FileContent;
@@ -58,11 +62,9 @@ void AGridManager::BeginPlay()
 		// We use the LoadFileToString to load the file into
 		if (FFileHelper::LoadFileToString(FileContent, *file, FFileHelper::EHashOptions::None))
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Actually Read the file from content"));
 			//UE_LOG(LogTemp, Warning, TEXT("%s"), *FileContent);
 			myArr = ParseString(&FileContent);
-			for (int i = 0; i < myArr.Num(); i++) {
-				UE_LOG(LogTemp, Warning, TEXT("%d"), myArr[i]);
-			}
 			GridHeight = myArr[0];
 			GridWidth = myArr[1];
 			numofturrets = myArr[2];
@@ -108,9 +110,9 @@ void AGridManager::BeginPlay()
 			}
 			ATile* newTile = GetWorld()->SpawnActor<ATile>(tileToSpawn, FVector(FIntPoint(xPos, yPos)), FRotator::ZeroRotator);
 			newTile->TileIndex = FIntPoint(x, y);
-			newTile->SetActorLabel(FString::Printf(TEXT("Tile_%d-%d"), x, y));
+			//newTile->SetActorLabel(FString::Printf(TEXT("Tile_%d-%d"), x, y));
 			Grid2DArray[x][y] = newTile; //The 2D array now holds each actor
-		//	UE_LOG(LogTemp, Warning, TEXT("Bool value is: %s"), flagArray[x][y] ? TEXT("true") : TEXT("false"));
+		//UE_LOG(LogTemp, Warning, TEXT("Bool value is: %s"), flagArray[x][y] ? TEXT("true") : TEXT("false"));
 		}
 	}
 
@@ -135,14 +137,22 @@ void AGridManager::BeginPlay()
 //spawning coins
 #pragma region SpawningCoins
 	TSubclassOf<AActor> cointoSpawn = Coin;
-	i = FMath::RandRange(0, GridWidth - 1);
-	j = FMath::RandRange(0, GridHeight - 1);
-	while (flagArray[i][j] == true) {
+
+	for (int x = 0; x < (int32)(GridHeight * GridWidth)/2; ++x) 
+	{
 		i = FMath::RandRange(0, GridWidth - 1);
 		j = FMath::RandRange(0, GridHeight - 1);
+		while (flagArray[i][j] == true) {
+			i = FMath::RandRange(0, GridWidth - 1);
+			j = FMath::RandRange(0, GridHeight - 1);
+		}
+		AActor* newCoin = GetWorld()->SpawnActor<AActor>(cointoSpawn, FVector(FIntPoint(i * 100, j * 100)), FRotator::ZeroRotator);
+		flagArray[i][j] = true;
+
 	}
-	AActor* newCoin = GetWorld()->SpawnActor<AActor>(cointoSpawn, FVector(FIntPoint(i * 100, j * 100)), FRotator::ZeroRotator);
-	flagArray[i][j] = true;
+
+	
+
 
 #pragma endregion
 

@@ -4,6 +4,7 @@
 #include "Coin.h"
 #include "Components/CapsuleComponent.h"
 #include "GridManager.h"
+#include "BallCharacter.h"
 
 // Sets default values
 ACoin::ACoin()
@@ -34,13 +35,16 @@ void ACoin::BeginPlay()
 void ACoin::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor && (OtherActor != this) && OtherComp)
-	{
-	
-			
-			this->Destroy();
-		
+	{	
+		ABallCharacter* ballcharacter = Cast<ABallCharacter>(OtherActor);
+		if (ballcharacter) 
+		{
+			ballcharacter->UpdateScore();
+		}
+			this->Destroy();	
 	}
 }
+
 
 
 
